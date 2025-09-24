@@ -1,0 +1,46 @@
+--// Fix Lag 100%
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+
+local function FixLag100()
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    game:GetService("Lighting").GlobalShadows = false
+    game:GetService("Lighting").FogEnd = 25
+
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Trail") then v.Enabled = false end
+        if v:IsA("Decal") or v:IsA("Texture") then v.Transparency = 1 end
+        if v:IsA("MeshPart") then v.TextureID = "" end
+        if v:IsA("BasePart") then
+            v.Material = Enum.Material.Plastic
+            v.Reflectance = 0
+        end
+    end
+
+    local gui = Instance.new("ScreenGui", CoreGui)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 300, 0, 60)
+    frame.Position = UDim2.new(0.5, -150, -0.2, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    frame.Parent = gui
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+    local txt = Instance.new("TextLabel", frame)
+    txt.Size = UDim2.new(1, -20, 1, 0)
+    txt.Position = UDim2.new(0, 10, 0, 0)
+    txt.BackgroundTransparency = 1
+    txt.Text = "✅ Fix Lag 100% Thành Công!"
+    txt.Font = Enum.Font.GothamBold
+    txt.TextScaled = true
+    txt.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    local tweenIn = TweenService:Create(frame, TweenInfo.new(0.6, Enum.EasingStyle.Back), {Position = UDim2.new(0.5, -150, 0.05, 0)})
+    tweenIn:Play()
+    task.delay(3, function()
+        local tweenOut = TweenService:Create(frame, TweenInfo.new(0.6, Enum.EasingStyle.Quad), {Position = UDim2.new(0.5, -150, -0.2, 0)})
+        tweenOut:Play()
+        tweenOut.Completed:Connect(function() gui:Destroy() end)
+    end)
+end
+
+FixLag100()
