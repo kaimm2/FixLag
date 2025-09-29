@@ -1,0 +1,71 @@
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local Settings = settings()
+
+local player = Players.LocalPlayer
+
+local function optimizeLighting()
+    pcall(function()
+        Settings().Rendering.QualityLevel = 10
+        Lighting.GlobalShadows = false
+        Lighting.ShadowSoftness = 0
+        Lighting.Brightness = 1
+        Lighting.OutdoorAmbient = Color3.fromRGB(128,128,128)
+        Lighting.FogStart = 0
+        Lighting.FogEnd = 1e9
+    end)
+    for _, effect in pairs(Lighting:GetChildren()) do
+        pcall(function()
+            if effect:IsA("PostEffect") then
+                effect.Enabled = false
+            end
+        end)
+    end
+    pcall(function()
+        if Lighting:FindFirstChild("DepthOfField") then
+            Lighting.DepthOfField.Enabled = false
+        end
+        if Lighting:FindFirstChild("Bloom") then
+            Lighting.Bloom.Enabled = false
+        end
+    end)
+end
+
+local function removeSkillEffectSafe(obj)
+    pcall(function()
+        if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Beam") then
+            obj.Enabled = false
+        elseif obj:IsA("PointLight") or obj:IsA("SpotLight") or obj:IsA("SurfaceLight") then
+            obj.Enabled = false
+        elseif obj:IsA("Explosion") or obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Sparkles") then
+            obj:Destroy()
+        elseif obj:IsA("BasePart") and (obj.Name:match("SkillVisual") or obj.Name:match("Effect")) then
+            obj:Destroy()
+        elseif obj:IsA("BasePart") then
+            obj.Material = Enum.Material.Plastic
+            obj.Reflectance = 0
+            obj.CastShadow = false
+        end
+    end)
+end
+
+for _, obj in pairs(Workspace:GetDescendants()) do
+    removeSkillEffectSafe(obj)
+end
+
+Workspace.DescendantAdded:Connect(removeSkillEffectSafe)
+
+local function onCharacterAdded(char)
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    optimizeLighting()
+    for _, obj in pairs(Workspace:GetDescendants()) do
+        removeSkillEffectSafe(obj)
+    end
+end
+
+player.CharacterAdded:Connect(onCharacterAdded)
+
+optimizeLighting()
+
+print("TthanhFixLag Enable!")
