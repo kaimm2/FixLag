@@ -1,1 +1,37 @@
-
+local l=game:GetService("Lighting")local w=workspace local p=game:GetService("Players").LocalPlayer
+for _,v in pairs(l:GetChildren())do if v:IsA("PostEffect")or v:IsA("BloomEffect")or v:IsA("BlurEffect")or v:IsA("ColorCorrectionEffect")or v:IsA("DepthOfFieldEffect")or v:IsA("SunRaysEffect")then v.Enabled=false end end
+l.GlobalShadows=false
+l.Brightness=3
+l.OutdoorAmbient=Color3.new(0.7,0.7,0.7)
+l.Ambient=Color3.new(0.7,0.7,0.7)
+l.EnvironmentDiffuseScale=0
+l.EnvironmentSpecularScale=0
+l.FogEnd=999999
+l.FogStart=0
+for _,v in pairs(w:GetDescendants())do
+pcall(function()
+if v:IsA("ParticleEmitter")or v:IsA("Trail")or v:IsA("Beam")or v:IsA("Fire")or v:IsA("Smoke")or v:IsA("Sparkles")then v.Enabled=false end
+if v:IsA("Decal")or v:IsA("Texture")then v.Transparency=1 end
+if v:IsA("PointLight")or v:IsA("SpotLight")or v:IsA("SurfaceLight")then v.Enabled=false v.Brightness=0 end
+if v:IsA("BasePart")then
+v.Material=Enum.Material.SmoothPlastic
+v.Color=v.Color*0.8
+v.Reflectance=0
+v.CastShadow=false
+end
+end)
+end
+for _,v in pairs(p:GetDescendants())do
+pcall(function()
+if v:IsA("ParticleEmitter")or v:IsA("Trail")or v:IsA("Beam")or v:IsA("Fire")or v:IsA("Smoke")or v:IsA("Sparkles")then v.Enabled=false end
+if v:IsA("Decal")or v:IsA("Texture")then v.Transparency=1 end
+if v:IsA("PointLight")or v:IsA("SpotLight")or v:IsA("SurfaceLight")then v.Enabled=false v.Brightness=0 end
+if v:IsA("BasePart")then
+v.Material=Enum.Material.SmoothPlastic
+v.Color=v.Color*0.8
+v.Reflectance=0
+v.CastShadow=false
+end
+end)
+end
+settings().Rendering.QualityLevel=Enum.QualityLevel.Level01
